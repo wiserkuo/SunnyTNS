@@ -4,17 +4,23 @@ A SunnyTNNS system for student and coach
 # Update logs
 20160727
 
-login.php: upperform = student login (by facebook or pre-setup accounts in SQL) 
+login.php: 
 
-           lowerform=coach login
+upperform = student login (by facebook or pre-setup accounts in SQL) 
 
-sunny_student.php:  1.It uses facebook api to create/login by fb account's internal access_token. In order to implement auto-login , access_token is saved as account's password in SQL table student_list.
+lowerform=coach login
 
-					2.It shows registered class's info,class materials,class attending records,message for each attends. 
+sunny_student.php:  
 
-sunny_coach.php: 1.It shows coach's  info of there own classes , class materials , student list , student attending records.
+1.It uses facebook api to create/login by fb account's internal access_token. In order to implement auto-login , access_token is saved as account's password in SQL table student_list.
 
-				 2.Student list has selection list to modify student's level , it calls function changeLevel and uses AJAX technique,on background,call change_level.php to change value of Level field in SQL table student_list. 
+2.It shows registered class's info,class materials,class attending records,message for each attends. 
+
+sunny_coach.php: 
+
+1.It shows coach's  info of there own classes , class materials , student list , student attending records.
+
+2.Student list has selection list to modify student's level , it calls function changeLevel and uses AJAX technique,on background,call change_level.php to change value of Level field in SQL table student_list. 
 <!-- 
 # Platforms
 Amen is developed on Ubuntu 14.04 and higher.  OS X should be workable.  Windows users should install Ubuntu.

@@ -1,6 +1,6 @@
 <html>
 <body>
-
+<p>學員登入
 <form action="sunny_student.php" method="post">
 Account: <input type="text" name="account"><br>
 Password: <input type="text" name="password"><br>
@@ -21,13 +21,16 @@ Password: <input type="text" name="password"><br>
 
 	echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
 ?> 
+</p><br><br>
 
+
+<p>教練登入
 <form action="sunny_coach.php" method="post">
-Account: <input type="text" name="account"><br>
-Password: <input type="text" name="password"><br>
+Account: <input type="text" name="account" value="ricklin@gmail.com"><br>
+Password: <input type="text" name="password" value="0987654321"><br>
 <input type="submit">
 </form>
-
+</p>
 
 
 </body>

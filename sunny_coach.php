@@ -3,15 +3,6 @@
 <body>
 
 <h1>Sunny Tennis Coach System</h1>
-
-
-
-<form action="">
-First name: <input type="text" id="txt1" onkeyup="showHint(this.value)">
-</form>
-
-<p>Suggestions: <span id="txtHint"></span></p>
-
 <script>
 function showHint(str) {
   var xhttp;
@@ -46,14 +37,64 @@ function changeLevel(level,account) {
         xmlhttp.send();
     //}
 }
+
+</script>
+<script>
+function getMaterial(num,classname){
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("meterialTextArea").innerHTML = xmlhttp.responseText;
+            }
+        };
+        xmlhttp.open("GET", "get_material.php?n="+num+"&c="+classname, true);
+        xmlhttp.send();	
+}
+</script>
+<script>
+function setMaterial(classname,classcount){
+        var xmlhttp = new XMLHttpRequest();
+        var index =document.getElementById("selectNum").selectedIndex+1;
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              document.getElementById('material'+classcount+'_'+index).innerHTML = xmlhttp.responseText;
+              //document.getElementById('material1_2').innerHTML = xmlhttp.responseText;
+                document.getElementById("setMeterialReport").innerHTML = xmlhttp.responseText;
+            }
+        };
+        //var m="material"+class_count+"_"+index;
+       // document.write(m);
+        //document.write("\"material"+class_count+"_"+index+"\"");
+       //  document.write("\n"+ document.getElementById("meterialTextArea").value);
+        xmlhttp.open("GET", "set_material.php?m="+document.getElementById("meterialTextArea").value+"&n="+index+"&c="+classname, true);
+        xmlhttp.send();	
+}
 </script>
 <?php
+// <form action="">
+// First name: <input type="text" id="txt1" onkeyup="showHint(this.value)">
+// </form>
+
+// <p>Suggestions: <span id="txtHint"></span></p>
+
+
+
+// <form onsubmit="changeLevel()">
+//   <fieldset>
+//     <legend>編輯上課教材:</legend>
+//     <select onchange="changeLevel()">;
+//     	<option value=1 selected="true">第1堂</option>
+//     </select><br><br>
+//     <textarea name="message" rows="10" cols="30">The cat was playing in the garden.</textarea><br>
+//     <input type="submit" value="提交">
+//   </fieldset>
+// </form>
     $account = $_POST["account"];
     $password = $_POST["password"];
     //echo "account=",$account; 
     //echo "<br>";
     //echo "password=",$password; 
-    
+  
 
     //connect mysql and fetch data
     $dbhost = 'localhost';
@@ -75,6 +116,7 @@ function changeLevel(level,account) {
  	   		echo "<br>Password is incorrect";
 		}	
  		else{
+ 
  			$name=$row['Name'];
  	   		echo "<br>",$name," 教練 ,歡迎來到陽光網球教練控制台";	
 			
@@ -87,26 +129,58 @@ function changeLevel(level,account) {
     				echo '<tr>';	
       			echo '<td>',$row['Class'],'</td><td>',$row['Level'],'</td><td>',$row['Court'],'</td><td>',$row['Time'],'</td><td>',$row['StartDate'],'</td>';
       			echo "</tr>";
+      			
     			}
     			echo '</table>';
     			
     			
-    			
+    		      $class_count=0;
     			
                   $result = mysql_query($sql) or die('MySQL query error');
                   while($row = mysql_fetch_array($result)){	
-      			echo "<br>",$row['Class'];
-      			
-      			echo "<br>課程內容簡介:";
+                  	$class_count+=1;
+      			//echo "<br>",$row['Class'];
+    	//echo "<fieldset> <legend>課程內容簡介:</legend>";
+    	$materials = array();
+//$arrlength = count($cars);
+
+//for($x = 0; $x < $arrlength; $x++) {
+  //  echo $cars[$x];
+ //   echo "<br>";
+//}
+     
+     echo "<fieldset>
+     <legend>{$row['Class']} 課程內容簡介:</legend>";
     				for ($i = 1; $i <= 5; $i++) {
 					$sql = "SELECT * FROM `class_teaching_material` WHERE Class = '{$row['Class']}' AND Number = {$i}";
     					$result4 = mysql_query($sql) or die('MySQL query error');
     					$row4 = mysql_fetch_array($result4);
-    					echo "<br>第{$i}堂: ",$row4['Material'];
+    					echo "<br>第{$i}堂: <span id=\"material"  ,  $class_count,"_",$i, "\">",$row4['Material'],"</span>";
+    					echo "<br>\"material",$class_count,"_",$i,"\""; 
+    					$materials[$i]=$row4['Material'];
     				} 
+      		
+  				// echo '
+  				// <form onsubmit="setMaterial(1,\'',$row['Class'],'\')">
+  				echo '<fieldset>
+    				<legend>編輯課程內容:</legend>';
+    				echo '<select id="selectNum" onchange="getMaterial(this.options[this.selectedIndex].value,\'',$row['Class'],'\')">';
+    				echo'	<option value=1 selected="true">第1堂</option>
+    					<option value=2>第2堂</option>
+    					<option value=3>第3堂</option>
+    					<option value=4>第4堂</option>
+    					<option value=5>第5堂</option>
+    				</select><br>
+    				<textarea id="meterialTextArea" name="message" rows="10" cols="30">',$materials[1],'</textarea><br>
+                        <button type="button" onclick="setMaterial(\'' ,$row['Class'], '\','  ,$class_count,')">提交</button>
+  				</fieldset>
+				';
       			
+      echo "</fieldset>";      			
+      		
       			$sql = "SELECT * FROM `class_registered_list` WHERE Class = '{$row['Class']}'";
       			$result2 = mysql_query($sql) or die('MySQL query error');
+ 
                         echo "<br>學員列表";
       			echo '<table border="1">';
 			      echo '<tr><th>Name</th><th>Level</th><th>Region</th></tr>';  
@@ -166,4 +240,6 @@ function changeLevel(level,account) {
 
 </body>
 <p>Suggestions: <span id="txtHin"></span></p>
+<p>Suggestions: <span id="setMeterialReport"></span></p>
+<p id="material1"> dfghjklfghjk</p>
 </html> 

@@ -40,15 +40,18 @@ function changeLevel(level,account) {
 
 </script>
 <script>
-function getMaterial(num,classname){
+function getMaterial(classname){
         var xmlhttp = new XMLHttpRequest();
+        var index =document.getElementById("selectNum").selectedIndex+1;
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                document.getElementById("meterialTextArea").innerHTML = xmlhttp.responseText;
+                document.getElementById("meterialTextArea").value = xmlhttp.responseText;
+                document.getElementById("m").innerHTML = xmlhttp.responseText;
             }
         };
-        xmlhttp.open("GET", "get_material.php?n="+num+"&c="+classname, true);
-        xmlhttp.send();	
+        xmlhttp.open("GET", "get_material.php?n="+index+"&c="+classname, true);
+        xmlhttp.send();
+       // document.write("index="+index);
 }
 </script>
 <script>
@@ -59,7 +62,7 @@ function setMaterial(classname,classcount){
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
               document.getElementById('material'+classcount+'_'+index).innerHTML = xmlhttp.responseText;
               //document.getElementById('material1_2').innerHTML = xmlhttp.responseText;
-                document.getElementById("setMeterialReport").innerHTML = xmlhttp.responseText;
+
             }
         };
         //var m="material"+class_count+"_"+index;
@@ -164,7 +167,7 @@ function setMaterial(classname,classcount){
   				// <form onsubmit="setMaterial(1,\'',$row['Class'],'\')">
   				echo '<fieldset>
     				<legend>編輯課程內容:</legend>';
-    				echo '<select id="selectNum" onchange="getMaterial(this.options[this.selectedIndex].value,\'',$row['Class'],'\')">';
+    				echo '<select id="selectNum" onchange="getMaterial(\'' , $row['Class'] , '\')">';
     				echo'	<option value=1 selected="true">第1堂</option>
     					<option value=2>第2堂</option>
     					<option value=3>第3堂</option>
@@ -240,6 +243,5 @@ function setMaterial(classname,classcount){
 
 </body>
 <p>Suggestions: <span id="txtHin"></span></p>
-<p>Suggestions: <span id="setMeterialReport"></span></p>
-<p id="material1"> dfghjklfghjk</p>
+<p>Suggestions: <span id="m"></span></p>
 </html> 

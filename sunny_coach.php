@@ -23,19 +23,14 @@ function showHint(str) {
 
 <script>
 function changeLevel(level,account) {
-    //if (level.length == 0) { 
-    //    document.getElementById("txtHint").innerHTML = "";
-    //    return;
-    //} else {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                document.getElementById("txtHin").innerHTML = xmlhttp.responseText;
-            }
-        };
-        xmlhttp.open("GET", "change_level.php?l="+level+"&a="+account, true);
-        xmlhttp.send();
-    //}
+	var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+      	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      		document.getElementById("txtHin").innerHTML = xmlhttp.responseText;
+      	}
+      };
+     	xmlhttp.open("GET", "ajax_command.php?f=1"+"&l="+level+"&a="+account, true);
+      xmlhttp.send();
 }
 
 </script>
@@ -49,9 +44,8 @@ function getMaterial(classname){
                 document.getElementById("m").innerHTML = xmlhttp.responseText;
             }
         };
-        xmlhttp.open("GET", "get_material.php?n="+index+"&c="+classname, true);
-        xmlhttp.send();
-       // document.write("index="+index);
+        xmlhttp.open("GET", "ajax_command.php?f=2"+"&n="+index+"&c="+classname, true);
+        xmlhttp.send();;
 }
 </script>
 <script>
@@ -61,43 +55,15 @@ function setMaterial(classname,classcount){
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
               document.getElementById('material'+classcount+'_'+index).innerHTML = xmlhttp.responseText;
-              //document.getElementById('material1_2').innerHTML = xmlhttp.responseText;
-
             }
         };
-        //var m="material"+class_count+"_"+index;
-       // document.write(m);
-        //document.write("\"material"+class_count+"_"+index+"\"");
-       //  document.write("\n"+ document.getElementById("meterialTextArea").value);
-        xmlhttp.open("GET", "set_material.php?m="+document.getElementById("meterialTextArea").value+"&n="+index+"&c="+classname, true);
+        xmlhttp.open("GET", "ajax_command.php?f=3"+"&m="+document.getElementById("meterialTextArea").value+"&n="+index+"&c="+classname, true);
         xmlhttp.send();	
 }
 </script>
 <?php
-// <form action="">
-// First name: <input type="text" id="txt1" onkeyup="showHint(this.value)">
-// </form>
-
-// <p>Suggestions: <span id="txtHint"></span></p>
-
-
-
-// <form onsubmit="changeLevel()">
-//   <fieldset>
-//     <legend>編輯上課教材:</legend>
-//     <select onchange="changeLevel()">;
-//     	<option value=1 selected="true">第1堂</option>
-//     </select><br><br>
-//     <textarea name="message" rows="10" cols="30">The cat was playing in the garden.</textarea><br>
-//     <input type="submit" value="提交">
-//   </fieldset>
-// </form>
     $account = $_POST["account"];
     $password = $_POST["password"];
-    //echo "account=",$account; 
-    //echo "<br>";
-    //echo "password=",$password; 
-  
 
     //connect mysql and fetch data
     $dbhost = 'localhost';
@@ -108,7 +74,6 @@ function setMaterial(classname,classcount){
     mysql_query("SET NAMES 'utf8'");
     mysql_select_db($dbname);
     $sql = "SELECT * FROM `coach_list` WHERE Account = \"{$account}\"";
-    //$sql = "INSERT INTO student_list (Account, Name, Password) VALUES ('novakdjokovicca', 'Novak Djokovic', 'isbetterthananyone')";
     $result = mysql_query($sql) or die('MySQL query error');
     if(mysql_num_rows($result)== 0){
 	 echo "<br>There is no such account.";
@@ -142,48 +107,33 @@ function setMaterial(classname,classcount){
                   $result = mysql_query($sql) or die('MySQL query error');
                   while($row = mysql_fetch_array($result)){	
                   	$class_count+=1;
-      			//echo "<br>",$row['Class'];
-    	//echo "<fieldset> <legend>課程內容簡介:</legend>";
-    	$materials = array();
-//$arrlength = count($cars);
-
-//for($x = 0; $x < $arrlength; $x++) {
-  //  echo $cars[$x];
- //   echo "<br>";
-//}
-     
-     echo "<fieldset>
-     <legend>{$row['Class']} 課程內容簡介:</legend>";
+				$materials = array();
+				echo "<fieldset>
+     					<legend>{$row['Class']} </legend> 
+     					課程內容簡介:";
     				for ($i = 1; $i <= 5; $i++) {
 					$sql = "SELECT * FROM `class_teaching_material` WHERE Class = '{$row['Class']}' AND Number = {$i}";
     					$result4 = mysql_query($sql) or die('MySQL query error');
     					$row4 = mysql_fetch_array($result4);
     					echo "<br>第{$i}堂: <span id=\"material"  ,  $class_count,"_",$i, "\">",$row4['Material'],"</span>";
-    					echo "<br>\"material",$class_count,"_",$i,"\""; 
+    					//echo "<br>\"material",$class_count,"_",$i,"\""; 
     					$materials[$i]=$row4['Material'];
     				} 
-      		
-  				// echo '
-  				// <form onsubmit="setMaterial(1,\'',$row['Class'],'\')">
   				echo '<fieldset>
-    				<legend>編輯課程內容:</legend>';
+    					<legend>編輯課程內容:</legend>';
     				echo '<select id="selectNum" onchange="getMaterial(\'' , $row['Class'] , '\')">';
     				echo'	<option value=1 selected="true">第1堂</option>
     					<option value=2>第2堂</option>
     					<option value=3>第3堂</option>
     					<option value=4>第4堂</option>
     					<option value=5>第5堂</option>
-    				</select><br>
-    				<textarea id="meterialTextArea" name="message" rows="10" cols="30">',$materials[1],'</textarea><br>
-                        <button type="button" onclick="setMaterial(\'' ,$row['Class'], '\','  ,$class_count,')">提交</button>
-  				</fieldset>
+    					</select><br>
+    					<textarea id="meterialTextArea" name="message" rows="10" cols="30">',$materials[1],'</textarea><br>
+                        	<button type="button" onclick="setMaterial(\'' ,$row['Class'], '\','  ,$class_count,')">提交</button>
+  					</fieldset>
 				';
-      			
-      echo "</fieldset>";      			
-      		
       			$sql = "SELECT * FROM `class_registered_list` WHERE Class = '{$row['Class']}'";
       			$result2 = mysql_query($sql) or die('MySQL query error');
- 
                         echo "<br>學員列表";
       			echo '<table border="1">';
 			      echo '<tr><th>Name</th><th>Level</th><th>Region</th></tr>';  
@@ -212,11 +162,10 @@ function setMaterial(classname,classcount){
       				echo '</td><td>',$row3['Region'],'</td>';
       				echo '</tr>';
       			}
-      			echo '</table>';
-
-      			echo "<br>學員上課紀錄";
-      			echo '<table border="1">';
-			      echo '<tr><th>堂數</th><th>時間</th><th>參與學員</th></tr>'; 
+      			echo '</table>
+      			 	<br>學員上課紀錄
+      				<table border="1">
+			      	<tr><th>堂數</th><th>時間</th><th>參與學員</th></tr>'; 
       			for($i= 1; $i<=5; $i++){
       			      $sql = "SELECT * FROM `class_attending_record` WHERE Class = '{$row['Class']}' AND ClassNum = {$i}";
       			      $result5 = mysql_query($sql) or die('MySQL query error');
@@ -231,11 +180,12 @@ function setMaterial(classname,classcount){
       					$row6 = mysql_fetch_array($result6);
       			      	echo $row6['Name'],",";
       			      }
-      			      echo '</td></tr>';
-      			      
+      			      echo '</td></tr>';   
       		      }
-      		      echo '</table>';
+      		      echo '</table>
+      		      	</fieldset>'; 
     			}
+    			
 		}
     	 
 	}
